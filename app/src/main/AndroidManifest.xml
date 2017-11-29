@@ -29,18 +29,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="project.naloxone.MapsActivity">
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="project.naloxone.DetailsActivity"
-            android:parentActivityName="project.naloxone.MapsActivity"
-            ></activity>
+            android:name=".DetailsActivity"
+            android:parentActivityName=".MapsActivity" />
+        <activity android:name=".MapsActivity"></activity>
     </application>
 
 </manifest>
