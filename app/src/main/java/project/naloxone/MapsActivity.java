@@ -3,10 +3,13 @@ package project.naloxone;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -195,8 +199,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -206,20 +208,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
         LatLng coordinate1;
-        for(Naloxone i :locationsWithTraining) {
-            coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        }
-        toBePassed = locationsWithTraining;
+
         //Camera Set to London Drugs in New West
         LatLng coordinateCamera = new LatLng(Double.parseDouble(LONDON_DRUGS_ADDRESS.getY()),Double.parseDouble(LONDON_DRUGS_ADDRESS.getX()));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinateCamera, 13));
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinateCamera, 13), new GoogleMap.CancelableCallback() {
+
+            @Override
+            public void onFinish() {
+                //Here you can take the snapshot or whatever you want
+                for(Naloxone i :locationsWithTraining) {
+                    LatLng coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
+                    dropPinEffect( mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
+                }
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
+
+        toBePassed = locationsWithTraining;
+
+
+
+
+
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -364,7 +385,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //With training markers set to blue
                         for(Naloxone i :locationsNoTraining) {
                             coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                           mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locationsNoTraining;
 
@@ -377,7 +398,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //With training markers set to blue
                         for(Naloxone i :locationsWithTraining) {
                             coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+                           mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locationsWithTraining;
 
@@ -390,7 +412,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //With training markers set to blue
                         for(Naloxone i :locations) {
                             coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                           mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locations;
 
@@ -410,4 +432,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int focus = intent.getIntExtra("tab", 1);
         return focus;
     }
+
+
+
+
+
+    private void dropPinEffect(final Marker marker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        final Interpolator interpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post again 15ms later.
+                    handler.postDelayed(this, 15);
+                } else {
+                    marker.showInfoWindow();
+
+                }
+            }
+        });
+    }
+
+
 }
