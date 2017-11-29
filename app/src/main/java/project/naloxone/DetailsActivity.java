@@ -165,7 +165,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             if(animatedParent[parent] == false)
             {
-                Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_push_up_in);
+                Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_right_in);
                 convertView.startAnimation(animation);
                 animatedParent[parent] = true;
             }
@@ -186,10 +186,14 @@ public class DetailsActivity extends AppCompatActivity {
             //child_textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f);
             child_textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f);
 
-            Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_left_in);
-            convertView.startAnimation(animation);
+            if(animatedChild[parent] == false)
+            {
+                Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_left_in);
+                convertView.startAnimation(animation);
+                animatedParent[parent] = true;
+            }
             animatedChild[parent] = true;
-            
+
             return convertView;
         }
 

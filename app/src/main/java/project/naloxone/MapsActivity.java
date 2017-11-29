@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -58,7 +59,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     //Buttom for sending the direction
-    Button btnDirection;
+    FloatingActionButton floatingActionButton;
 
     double lat = 0;
     double lng = 0;
@@ -115,13 +116,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationsWithTraining.add(SAVEONFOODS_ADDRESS);
 
         //Setting the Button object to the btnDir :: acitivty_maps
-        btnDirection = (Button)findViewById(R.id.btnDir);
+        floatingActionButton = (FloatingActionButton)findViewById(R.id.btnDir);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        btnDirection.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //new GetCoordinates().execute(edtAddress.getText().toString().replace(" ","+"));
@@ -232,7 +233,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Custom bounce animation
     public void bounceAnimation(View view)
     {
-        Button button = (Button)findViewById(R.id.btnDir);
+        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.btnDir);
         final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2,20);
