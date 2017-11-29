@@ -1,14 +1,23 @@
 package project.naloxone;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +29,6 @@ public class DetailsActivity extends AppCompatActivity {
     List<String> naloxone_list;
     ExpandableListView exp_list;
     CategoriesAdapter adapter;
-    Button btnData;
 
     ArrayList<Naloxone> list;
     /*
@@ -41,30 +49,25 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         setContentView(R.layout.activity_details);
         list = (ArrayList<Naloxone>) getIntent().getSerializableExtra("locations");
-        if(list.isEmpty()){
-            categories = DataProcessor.getInfo();
-        }else {
-            categories = new HashMap<>();
-            for (int i = 0; i < list.size(); i++) {
-                List<String> free = new ArrayList<String>();
-                free.add("Desicrption: " + list.get(i).getDescription());
-                free.add("Category: " + list.get(i).getCategory());
-                free.add("Hours: " + list.get(i).getHours());
-                free.add("Location: " + list.get(i).getLocation());
-                free.add("Phone: " + list.get(i).getPhone());
-                free.add("Email: " + list.get(i).getEmail());
-                free.add("Website: " + list.get(i).getWebsite());
-                categories.put(list.get(i).getName(), free);
-            }
+
+        categories = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            List<String> free = new ArrayList<String>();
+            free.add("Description: " + list.get(i).getDescription());
+            free.add("Category: " + list.get(i).getCategory());
+            free.add("Hours: " + list.get(i).getHours());
+            free.add("Location: " + list.get(i).getLocation());
+            free.add("Phone: " + list.get(i).getPhone());
+            free.add("Email: " + list.get(i).getEmail());
+            free.add("Website: " + list.get(i).getWebsite());
+            categories.put(list.get(i).getName(), free);
         }
+
         //ExpandableList :: activity_details
         exp_list = findViewById(R.id.expandableList);
-
-        //HashMap object containing all the information from the database
-        //categories = DataProcessor.getInfo();
 
         naloxone_list = new ArrayList<String>(categories.keySet());
 
@@ -94,5 +97,109 @@ public class DetailsActivity extends AppCompatActivity {
         // Inflate the menu. This adds items to the app bar.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public class CategoriesAdapter extends BaseExpandableListAdapter {
+        boolean animatedParent[] = new boolean[list.size()];
+        boolean animatedChild[] = new boolean[list.size()];
+
+        private Context ctx;
+        private HashMap<String, List<String>> naloxone_category;
+        private List<String> naloxone_list;
+
+        public CategoriesAdapter(Context ctx, HashMap<String, List<String>> naloxone_category, List<String> naloxone_list)
+        {
+            this.ctx = ctx;
+            this.naloxone_category = naloxone_category;
+            this.naloxone_list = naloxone_list;
+        }
+
+
+        @Override
+        public int getGroupCount() {
+            return naloxone_list.size();
+        }
+
+        @Override
+        public int getChildrenCount(int i) {
+            return naloxone_category.get(naloxone_list.get(i)).size();
+        }
+
+        @Override
+        public Object getGroup(int i) {
+            return naloxone_list.get(i);
+        }
+
+        @Override
+        public Object getChild(int parent, int child) {
+            return naloxone_category.get(naloxone_list.get(parent)).get(child);
+        }
+
+        @Override
+        public long getGroupId(int i) {
+            return i;
+        }
+
+        @Override
+        public long getChildId(int parent, int child) {
+            return child;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public View getGroupView(int parent, boolean isExpanded, View convertView, ViewGroup parentView) {
+            String group_title = (String) getGroup(parent);
+            if(convertView == null)
+            {
+                LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.parent_layout,parentView, false);
+            }
+            TextView parent_textview = convertView.findViewById(R.id.parent_txt);
+            parent_textview.setTypeface(null, Typeface.BOLD);
+            parent_textview.setText(group_title);
+            parent_textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
+
+            if(animatedParent[parent] == false)
+            {
+                Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_right_in);
+                convertView.startAnimation(animation);
+                animatedParent[parent] = true;
+            }
+
+            return convertView;
+        }
+
+        @Override
+        public View getChildView(int parent, int child, boolean lastChild, View convertView, ViewGroup parentView) {
+            String child_title = (String) getChild(parent,child);
+            if(convertView == null)
+            {
+                LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.child_layout, parentView,false);
+            }
+            TextView child_textview = convertView.findViewById(R.id.child_text);
+            child_textview.setText(child_title);
+            //child_textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f);
+            child_textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f);
+
+            if(animatedChild[parent] == false)
+            {
+                Animation animation = AnimationUtils.loadAnimation(DetailsActivity.this, R.anim.trans_left_in);
+                convertView.startAnimation(animation);
+                animatedParent[parent] = true;
+            }
+            animatedChild[parent] = true;
+
+            return convertView;
+        }
+
+        @Override
+        public boolean isChildSelectable(int i, int i1) {
+            return true;
+        }
     }
 }

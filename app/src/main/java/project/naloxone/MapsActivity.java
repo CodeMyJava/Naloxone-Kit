@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -62,10 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     //Buttom for sending the direction
-    Button btnDirection;
-
-    //Simple button for sending the data to the details activity.
-    Button btnData;
+    FloatingActionButton floatingActionButton;
 
     double lat = 0;
     double lng = 0;
@@ -93,8 +91,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_get_details:
-                Intent i = new Intent(this, DetailsActivity.class);
-                startActivity(i);
+                Intent intent = new Intent(MapsActivity.this,DetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("locations", (Serializable)toBePassed);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -117,41 +119,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationsWithTraining.add(PHARMASAVE_ADDRESS);
         locationsWithTraining.add(SAVEONFOODS_ADDRESS);
 
-
-        //Button for sending data :: activity_details
-        btnData = (Button) findViewById(R.id.sendData);
-
         //Setting the Button object to the btnDir :: acitivty_maps
-        btnDirection = (Button)findViewById(R.id.btnDir);
+        floatingActionButton = (FloatingActionButton)findViewById(R.id.btnDir);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        btnDirection.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //new GetCoordinates().execute(edtAddress.getText().toString().replace(" ","+"));
 
             }
         });
-        btnData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                //From JSON
-                Intent intent = new Intent(MapsActivity.this,DetailsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("locations", (Serializable)toBePassed);
-                intent.putExtras(bundle);
-
-                startActivity(intent);
-            }
-        });
-
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         new GetContacts().execute();
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
         createTabs();
+
     }
 
     private class GetCoordinates extends AsyncTask<String, Void, String> {
@@ -269,7 +254,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Custom bounce animation
     public void bounceAnimation(View view)
     {
-        Button button = (Button)findViewById(R.id.btnDir);
+        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.btnDir);
         final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2,20);
@@ -449,6 +434,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+
     private void dropPinEffect(final Marker marker) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
@@ -475,5 +461,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
 
 }

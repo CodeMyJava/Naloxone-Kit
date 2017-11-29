@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_tab"
     android:layout_width="match_parent"
@@ -21,27 +22,9 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="382dp"
+            android:layout_height="457dp"
             android:orientation="vertical"
             tools:context=".MapLocationActivity" />
-
-
-
-        <Button
-            android:id="@+id/sendData"
-            android:onClick="bounceAnimation"
-            android:layout_centerInParent="true"
-            android:text="Send Data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnDir"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:onClick="bounceAnimation"
-            android:text="Get Direction" />
 
     </LinearLayout>
     <TabHost
@@ -74,8 +57,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-
 
 
                 </LinearLayout>
@@ -113,6 +94,16 @@
                 </LinearLayout>
 
             </FrameLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btnDir"
+                android:layout_width="wrap_content"
+                android:layout_height="97dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:clickable="true"
+                android:layout_marginBottom="60dp"
+                app:srcCompat="@android:drawable/ic_menu_directions" />
         </RelativeLayout>
     </TabHost>
 
