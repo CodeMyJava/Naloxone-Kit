@@ -3,6 +3,7 @@ package project.naloxone;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,7 +24,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -149,7 +152,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         new GetContacts().execute();
         createTabs();
-
     }
 
     private class GetCoordinates extends AsyncTask<String, Void, String> {
@@ -187,8 +189,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 lng = parseDouble(((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                         .getJSONObject("location").get("lng").toString());
-
-                // System.out.println("OVER HERE MY MAN  " + parseDouble(lat) + "   " + parseDouble(lng));
 
                 onMapReady(mMap);
                 if (dialog.isShowing())
@@ -403,8 +403,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         toBePassed = locationsWithTraining;
 
-
-
                         break;
                     case "Tab3":
                         mMap.clear();
@@ -416,7 +414,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         toBePassed = locations;
 
-
                         break;
 
                     default:
@@ -425,7 +422,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
     }
     public int getFocus(){
         Intent intent = getIntent();

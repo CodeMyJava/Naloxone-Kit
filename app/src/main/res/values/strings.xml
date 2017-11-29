@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">MapImplementatino</string>
     <string name="title_activity_maps">Map</string>
     <string name="get_details">Details</string>
     <string name="get_directions">Directions</string>
