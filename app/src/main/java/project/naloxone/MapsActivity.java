@@ -54,6 +54,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Naloxone PHARMASAVE_ADDRESS = new Naloxone("N/A", "Pharmasave", "Community Pharmacies Carrying Naloxone But May Not Provide Training","Pharmacy", "Mon-Fri 9AM-9PM Sat 930AM-6PM Sun 10AM-6PM", "130-1005 Columbia Street", "V3M 6H5","604-525-5607","N/A","http://www.pharmasave.com/","-122.917109","49.200799");
     private Naloxone SAVEONFOODS_ADDRESS = new Naloxone("N/A", "Save-on Foods Pharmacy", "Community Pharmacies Carrying Naloxone But May Not Provide Training", "Pharmacy", "Mon-Sun 7AM-11PM", "270 E Columbia Street", " V3L 0E3", "604-523-2583","N/A","https://www.saveonfoods.com/store/columbia-square/","-122.892454","49.224389");
 
+    //Free Locations Not Included In JSON
+    private Naloxone LOWERMAINLANDDRUGFREEDOM_ADDRESS = new Naloxone("N/A", "Lower Mainland Drug Freedom", "Vancouver-based nonprofit organization that specializes in providing information and referral regarding community, government and social services in BC. Our help line services include 211, the Alcohol and Drug Information and Referral Service (ADIRS), the Problem Gambling Help Line, VictimLink BC, and the Youth Against Violence Line.","Nonprofit organization","N/A","25 Blackwood", "V3L 2T3", "604-527-1068", "N/A", "http://redbookonline.bc211.ca/organization/9489527/lower_mainland_drug_freedom_inc", "-122.904818","49.205356" );
+    private Naloxone WESTMINSTERMEDICALCLINIC_ADDRESS = new Naloxone("N/A", "Westminister Medical Clinic", "Medical Clinic with medical Supplies", "Clinic", "N/A","7636 6th St","V5N 3M5", "604-777-7095","N/S","","-122.931413","49.222162");
+    private Naloxone CONSTRUCTIONINDUSTRYREHABPLAN_ADDRESS = new Naloxone("N/A", "Construction Industry Rehab Plan", "CIRP was founded in the mid 1980s in response to a growing need to provide services to men and women in the construction industry with substance use issues. Since its initial inception the program has evolved and expanded, and today our mission is to provide not only the highest quality of mental health and addiction services for these men and women, but also services that are grounded in evidence and empirically based practices","Non-profit","N/A","402-223 Nelson Crescent", "V2L 0E4","604-521-8611","info@constructionrehabplan.com", "constructionrehabplan.com","-122.892167","49.224000");
+
     //URL to the Json file.
     private static final String JSON_URL = "http://opendata.newwestcity.ca/downloads/health/HEALTH_MENTAL_HEALTH_AND_ADDICTIONS_SERVICES.json";
 
@@ -68,6 +73,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Collection which contains the objects of Free Naloxone data from JSON.
     ArrayList<Naloxone> locations = new ArrayList<Naloxone>();
 
+    ArrayList<Naloxone> freeLocations = new ArrayList<Naloxone>();
     //Collection which contains the objects of static data of kits given with no training
     ArrayList<Naloxone> locationsNoTraining = new ArrayList<Naloxone>();
 
@@ -75,6 +81,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ArrayList<Naloxone> locationsWithTraining = new ArrayList<Naloxone>();
 
     ArrayList<Naloxone> toBePassed;
+
     int tabhold;
 
     private String TAG = MapsActivity.class.getSimpleName();
@@ -131,6 +138,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Adding static data to locationsWithTraining
         locationsWithTraining.add(PHARMASAVE_ADDRESS);
         locationsWithTraining.add(SAVEONFOODS_ADDRESS);
+        locationsWithTraining.add(LONDON_DRUGS_ADDRESS);
+        locationsWithTraining.add(SAFEWAY_MCBRIDE_ADDRESS);
+        locationsWithTraining.add(SAFEWAY_CARNARVON_ADDRESS);
+
+
+        freeLocations.add(LOWERMAINLANDDRUGFREEDOM_ADDRESS);
+        freeLocations.add(WESTMINSTERMEDICALCLINIC_ADDRESS);
+        freeLocations.add(CONSTRUCTIONINDUSTRYREHABPLAN_ADDRESS);
 
         //Setting the Button object to the btnDir :: acitivty_maps
         floatingActionButton = (FloatingActionButton)findViewById(R.id.btnDir);
@@ -217,8 +232,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinateCamera, 13), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
+
                 //Here you can take the snapshot or whatever you want
-                for(Naloxone i :locationsWithTraining) {
+                for(Naloxone i :locations) {
                     LatLng coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
                     dropPinEffect( mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
                 }
@@ -226,11 +242,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onCancel() {
-
             }
         });
         toBePassed = locationsWithTraining;
-
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
@@ -373,35 +387,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case "Tab1":
                         mMap.clear();
                         //With training markers set to blue
-                        for(Naloxone i :locationsNoTraining) {
-                            coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-                           mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                        }
-                        toBePassed = locationsNoTraining;
 
+                        for(Naloxone i :locations) {
+                            if(i.getLocation().equals("40 Begbie Street") || i.getLocation().equals("610 Sixth Street")) {
+                                freeLocations.add(i);
+                            }
+                        }
+
+                        for(Naloxone i: freeLocations){
+                            coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
+                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        }
+                        toBePassed = freeLocations;
                         break;
                     case "Tab2":
                         mMap.clear();
-
                         //With training markers set to blue
                         for(Naloxone i :locationsWithTraining) {
                             coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
-
                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locationsWithTraining;
-
                         break;
+
                     case "Tab3":
                         mMap.clear();
-
                         //With training markers set to blue
                         for(Naloxone i :locations) {
                             coordinate1 = new LatLng(parseDouble(i.getY()), parseDouble(i.getX()));
                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locations;
-
                         break;
 
                     default:

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">N.E.A.R</string>
+    <string name="app_name">LifeLife</string>
     <string name="title_activity_maps">Map</string>
     <string name="get_details">Details</string>
     <string name="get_directions">Directions</string>
-    <string name="NEAR">N.E.A.R</string>
+    <string name="LifeLine">LifeLife</string>
 
     <string-array name="arrayOfData">
         <item>Number 1</item>
