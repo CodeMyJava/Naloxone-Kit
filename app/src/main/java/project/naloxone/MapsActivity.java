@@ -1,11 +1,8 @@
 package project.naloxone;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -13,8 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,7 +20,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -86,6 +80,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String TAG = MapsActivity.class.getSimpleName();
     private ProgressDialog pDialog;
 
+    //Custom bounce animation
+    public void bounceAnimation(View view)
+    {
+        FloatingActionButton floatingButton = (FloatingActionButton)findViewById(R.id.btnDir);
+        final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
+
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        myAnim.setInterpolator(interpolator);
+
+        floatingButton.startAnimation(myAnim);
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu. This adds items to the app bar.
@@ -135,14 +142,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new GetCoordinates().execute(edtAddress.getText().toString().replace(" ","+"));
-
+                Animation animation = AnimationUtils.loadAnimation(MapsActivity.this, R.anim.bounce);
+                view.startAnimation(animation);
             }
         });
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         new GetContacts().execute();
         createTabs();
-
     }
 
     private class GetCoordinates extends AsyncTask<String, Void, String> {
@@ -180,8 +186,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 lng = parseDouble(((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                         .getJSONObject("location").get("lng").toString());
-
-                // System.out.println("OVER HERE MY MAN  " + parseDouble(lat) + "   " + parseDouble(lng));
 
                 onMapReady(mMap);
                 if (dialog.isShowing())
@@ -250,17 +254,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    //Custom bounce animation
-    public void bounceAnimation(View view)
-    {
-        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.btnDir);
-        final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
-
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2,20);
-        myAnim.setInterpolator(interpolator);
-
-        button.startAnimation(myAnim);
-    }
 
     private class GetContacts extends AsyncTask<Void, Void, Void> {
 
@@ -398,8 +391,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         toBePassed = locationsWithTraining;
 
-
-
                         break;
                     case "Tab3":
                         mMap.clear();
@@ -411,7 +402,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         toBePassed = locations;
 
-
                         break;
 
                     default:
@@ -420,7 +410,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
     }
     public int getFocus(){
         Intent intent = getIntent();
