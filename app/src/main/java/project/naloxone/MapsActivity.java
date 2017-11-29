@@ -3,8 +3,6 @@ package project.naloxone;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,10 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -73,10 +67,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //Collection which contains the objects of Free Naloxone data from JSON.
     ArrayList<Naloxone> locations = new ArrayList<Naloxone>();
+
     //Collection which contains the objects of static data of kits given with no training
     ArrayList<Naloxone> locationsNoTraining = new ArrayList<Naloxone>();
+
     //Collection which contains the objects of static data of kits with training on how to use them
     ArrayList<Naloxone> locationsWithTraining = new ArrayList<Naloxone>();
+
     ArrayList<Naloxone> toBePassed;
     int tabhold;
 
@@ -218,7 +215,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng coordinateCamera = new LatLng(Double.parseDouble(LONDON_DRUGS_ADDRESS.getY()),Double.parseDouble(LONDON_DRUGS_ADDRESS.getX()));
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinateCamera, 13), new GoogleMap.CancelableCallback() {
-
             @Override
             public void onFinish() {
                 //Here you can take the snapshot or whatever you want
@@ -233,13 +229,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
-
         toBePassed = locationsWithTraining;
-
-
-
-
 
     }
 
@@ -388,8 +378,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                            mMap.addMarker(new MarkerOptions().position(coordinate1).title(i.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                         }
                         toBePassed = locationsNoTraining;
-
-
 
                         break;
                     case "Tab2":

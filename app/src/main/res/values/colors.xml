@@ -5,4 +5,6 @@
     <!--<color name="colorAccent">#DCE1E9</color>-->
     <color name="lightPink">#FFB6C1</color>
     <color name="white">#ffff</color>
+    <color name="splashColor">#0091EA</color>
+
 </resources>
