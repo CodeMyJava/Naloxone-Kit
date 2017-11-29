@@ -128,9 +128,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         new GetContacts().execute();
         createTabs();
+
     }
 
     private class GetCoordinates extends AsyncTask<String, Void, String> {
