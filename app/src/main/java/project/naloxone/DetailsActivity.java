@@ -20,7 +20,6 @@ public class DetailsActivity extends AppCompatActivity {
     List<String> naloxone_list;
     ExpandableListView exp_list;
     CategoriesAdapter adapter;
-    Button btnData;
 
     ArrayList<Naloxone> list;
     /*
@@ -41,30 +40,25 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_details);
         list = (ArrayList<Naloxone>) getIntent().getSerializableExtra("locations");
-        if(list.isEmpty()){
-            categories = DataProcessor.getInfo();
-        }else {
-            categories = new HashMap<>();
-            for (int i = 0; i < list.size(); i++) {
-                List<String> free = new ArrayList<String>();
-                free.add("Desicrption: " + list.get(i).getDescription());
-                free.add("Category: " + list.get(i).getCategory());
-                free.add("Hours: " + list.get(i).getHours());
-                free.add("Location: " + list.get(i).getLocation());
-                free.add("Phone: " + list.get(i).getPhone());
-                free.add("Email: " + list.get(i).getEmail());
-                free.add("Website: " + list.get(i).getWebsite());
-                categories.put(list.get(i).getName(), free);
-            }
+
+        categories = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            List<String> free = new ArrayList<String>();
+            free.add("Description: " + list.get(i).getDescription());
+            free.add("Category: " + list.get(i).getCategory());
+            free.add("Hours: " + list.get(i).getHours());
+            free.add("Location: " + list.get(i).getLocation());
+            free.add("Phone: " + list.get(i).getPhone());
+            free.add("Email: " + list.get(i).getEmail());
+            free.add("Website: " + list.get(i).getWebsite());
+            categories.put(list.get(i).getName(), free);
         }
+
         //ExpandableList :: activity_details
         exp_list = findViewById(R.id.expandableList);
-
-        //HashMap object containing all the information from the database
-        //categories = DataProcessor.getInfo();
 
         naloxone_list = new ArrayList<String>(categories.keySet());
 

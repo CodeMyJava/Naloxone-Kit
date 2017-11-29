@@ -60,9 +60,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Buttom for sending the direction
     Button btnDirection;
 
-    //Simple button for sending the data to the details activity.
-    Button btnData;
-
     double lat = 0;
     double lng = 0;
 
@@ -89,8 +86,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_get_details:
-                Intent i = new Intent(this, DetailsActivity.class);
-                startActivity(i);
+                Intent intent = new Intent(MapsActivity.this,DetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("locations", (Serializable)toBePassed);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -113,10 +114,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationsWithTraining.add(PHARMASAVE_ADDRESS);
         locationsWithTraining.add(SAVEONFOODS_ADDRESS);
 
-
-        //Button for sending data :: activity_details
-        btnData = (Button) findViewById(R.id.sendData);
-
         //Setting the Button object to the btnDir :: acitivty_maps
         btnDirection = (Button)findViewById(R.id.btnDir);
 
@@ -131,22 +128,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-        btnData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                //From JSON
-                Intent intent = new Intent(MapsActivity.this,DetailsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("locations", (Serializable)toBePassed);
-                intent.putExtras(bundle);
-
-                startActivity(intent);
-            }
-        });
 
         new GetContacts().execute();
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
         createTabs();
     }
 
@@ -423,10 +406,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int focus = intent.getIntExtra("tab", 1);
         return focus;
     }
-
-
-
-
-
-
 }

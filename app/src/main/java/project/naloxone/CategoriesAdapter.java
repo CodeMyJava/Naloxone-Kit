@@ -76,7 +76,7 @@ public class CategoriesAdapter extends BaseExpandableListAdapter {
         TextView parent_textview = convertView.findViewById(R.id.parent_txt);
         parent_textview.setTypeface(null, Typeface.BOLD);
         parent_textview.setText(group_title);
-        parent_textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f);
+        parent_textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
 
         return convertView;
     }
@@ -92,7 +92,7 @@ public class CategoriesAdapter extends BaseExpandableListAdapter {
         TextView child_textview = convertView.findViewById(R.id.child_text);
         child_textview.setText(child_title);
         //child_textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f);
-        child_textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f);
+        child_textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f);
 
         return convertView;
     }

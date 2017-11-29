@@ -8,7 +8,9 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar_main" />
 
+    animateLayoutChanges adds auto-animation
     <ExpandableListView
+        android:animateLayoutChanges="true"
         android:layout_marginTop="?attr/actionBarSize"
         android:fitsSystemWindows="true"
         android:id="@+id/expandableList"
@@ -19,7 +21,7 @@
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-        android:paddingLeft="16dp"
+        android:paddingLeft="13dp"
         android:paddingRight="16dp"
         />
 
