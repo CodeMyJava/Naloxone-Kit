@@ -76,6 +76,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String TAG = MapsActivity.class.getSimpleName();
     private ProgressDialog pDialog;
 
+    //Custom bounce animation
+    public void bounceAnimation(View view)
+    {
+        FloatingActionButton floatingButton = (FloatingActionButton)findViewById(R.id.btnDir);
+        final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
+
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        myAnim.setInterpolator(interpolator);
+
+        floatingButton.startAnimation(myAnim);
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu. This adds items to the app bar.
@@ -125,8 +138,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new GetCoordinates().execute(edtAddress.getText().toString().replace(" ","+"));
-
+                Animation animation = AnimationUtils.loadAnimation(MapsActivity.this, R.anim.bounce);
+                view.startAnimation(animation);
             }
         });
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -230,17 +243,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    //Custom bounce animation
-    public void bounceAnimation(View view)
-    {
-        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.btnDir);
-        final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
-
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2,20);
-        myAnim.setInterpolator(interpolator);
-
-        button.startAnimation(myAnim);
-    }
 
     private class GetContacts extends AsyncTask<Void, Void, Void> {
 

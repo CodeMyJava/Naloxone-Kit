@@ -22,7 +22,7 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="457dp"
+            android:layout_height="516dp"
             android:orientation="vertical"
             tools:context=".MapLocationActivity" />
 
@@ -67,9 +67,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -97,13 +94,17 @@
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/btnDir"
+                android:onClick="bounceAnimation"
                 android:layout_width="wrap_content"
                 android:layout_height="97dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:clickable="true"
-                android:layout_marginBottom="60dp"
-                app:srcCompat="@android:drawable/ic_menu_directions" />
+                android:layout_marginBottom="70dp"
+                android:layout_marginLeft="8dp"
+                app:srcCompat="@android:drawable/ic_menu_directions"
+                app:backgroundTint="@color/lightPink"/>
+
         </RelativeLayout>
     </TabHost>
 
