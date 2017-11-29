@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Naloxone-Kit.iml" filepath="$PROJECT_DIR$/Naloxone-Kit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/naloxone.iml" filepath="$PROJECT_DIR$/naloxone.iml" />
     </modules>
   </component>
 </project>
