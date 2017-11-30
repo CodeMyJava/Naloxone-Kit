@@ -1,15 +1,22 @@
 package project.naloxone;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +28,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,7 +50,7 @@ import java.util.List;
 
 import static java.lang.Double.parseDouble;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
 
     //with training on Nalxone kit use
     private Naloxone LONDON_DRUGS_ADDRESS = new Naloxone("N/A","London Drugs Pharmacy","Community Pharmacies Carrying Naloxone and ProvidingOverdose Response Training in British Columbia", "Pharmacy", "Mon-Sat 8AM-10PM Sun 10AM-8PM", "100–555 6th Street", " V3L 5H1", "604-448-4803", "N/A", "https://www.londondrugs.com/ldhome/","-122.919370","49.212762");
@@ -58,6 +66,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String JSON_URL = "http://opendata.newwestcity.ca/downloads/health/HEALTH_MENTAL_HEALTH_AND_ADDICTIONS_SERVICES.json";
 
     private GoogleMap mMap;
+    private Location myLocation;
+    GPSTracker gps;
+
 
     //Buttom for sending the direction
     FloatingActionButton floatingActionButton;
@@ -79,6 +90,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private String TAG = MapsActivity.class.getSimpleName();
     private ProgressDialog pDialog;
+
+
 
     //Custom bounce animation
     public void bounceAnimation(View view)
@@ -122,6 +135,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        gps = new GPSTracker(this);
+        myLocation = gps.getLocation();
 
         //Adding static data to locationNoTraining
         locationsNoTraining.add(LONDON_DRUGS_ADDRESS);
@@ -144,11 +159,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Animation animation = AnimationUtils.loadAnimation(MapsActivity.this, R.anim.bounce);
                 view.startAnimation(animation);
+                Location hold = getNearestLoc(toBePassed);
+                // Create a Uri from an intent string. Use the result to create an Intent.
+                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + hold.getLongitude() + "," +hold.getLatitude());
+
+// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+// Make the Intent explicit by setting the Google Maps package
+                mapIntent.setPackage("com.google.android.apps.maps");
+
+// Attempt to start an activity that can handle the Intent
+                startActivity(mapIntent);
             }
         });
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         new GetContacts().execute();
         createTabs();
+
+
+
+
     }
 
     private class GetCoordinates extends AsyncTask<String, Void, String> {
@@ -323,6 +353,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return null;
         }
     }
+    public Location getNearestLoc(ArrayList<Naloxone> hold) {
+        Location closestLocation = new Location("");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //Location tmp = getLocation.location;
+            float smallestDistance = -1;
+            for( Naloxone i: hold){
+                Location targetLocation = new Location("");//provider name is unnecessary
+                targetLocation.setLatitude(i.getLatitude());//your coords of course
+                targetLocation.setLongitude(i.getLongitude());
+                float distance =  myLocation.distanceTo(targetLocation);
+
+                if(smallestDistance == -1 || distance < smallestDistance){
+                    closestLocation = targetLocation;
+                    smallestDistance = distance;
+                }
+            }
+
+        }
+        return closestLocation;
+
+    }
     public void switchTabs(int tab){
         TabHost host = (TabHost) findViewById(R.id.tabhost);
 
@@ -416,7 +467,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int focus = intent.getIntExtra("tab", 1);
         return focus;
     }
+    @Override
+    public void onLocationChanged(Location location) {
+        myLocation = location;
 
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","disable");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","status");
+    }
 
 
 
@@ -447,6 +517,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
 
 
 }

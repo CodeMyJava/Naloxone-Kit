@@ -130,4 +130,10 @@ public class Naloxone implements java.io.Serializable {
     public void setY(String y) {
         Y = y;
     }
+    public double getLatitude(){
+        return Double.parseDouble(X);
+    }
+    public double getLongitude(){
+        return Double.parseDouble(Y);
+    }
 }
